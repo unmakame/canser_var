@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cancer-var-demo"
+version = "0.1.0"
+description = "Учебный классификатор на встроенном наборе scikit-learn"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.110,<1.0",
+  "joblib>=1.3,<2.0",
+  "numpy>=1.24,<3.0",
+  "scikit-learn>=1.4,<2.0",
+  "uvicorn[standard]>=0.27,<1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
