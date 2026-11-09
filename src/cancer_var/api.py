@@ -1,5 +1,3 @@
-"""HTTP API для учебной модели."""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -28,7 +26,6 @@ class PredictionRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    """Проверяет наличие обученного файла модели."""
     if not ARTIFACT_PATH.exists():
         raise HTTPException(
             status_code=503,
@@ -39,7 +36,6 @@ def health() -> dict[str, str]:
 
 @app.post("/predict")
 def predict(request: PredictionRequest) -> dict[str, float | str]:
-    """Возвращает оценку модели для одной строки из 30 признаков."""
     if not ARTIFACT_PATH.exists():
         raise HTTPException(
             status_code=503,
@@ -68,16 +64,11 @@ def predict(request: PredictionRequest) -> dict[str, float | str]:
 
 @lru_cache(maxsize=1)
 def load_artifact() -> dict:
-    """Загружает доверенный локальный артефакт один раз на процесс.
-
-    После переобучения сервер нужно перезапустить.
-    """
     return joblib.load(ARTIFACT_PATH)
 
 
 @app.get("/features")
 def features() -> dict:
-    """Порядок признаков для запросов предсказания."""
     health()
     artifact = load_artifact()
     return {"feature_names": artifact["feature_names"], "count": 30}

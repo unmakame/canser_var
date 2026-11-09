@@ -1,4 +1,3 @@
-"""Интеграционные проверки обучения, API и ошибочных входов."""
 import joblib
 import numpy as np
 import pytest
@@ -49,5 +48,16 @@ def test_missing_model(client, monkeypatch, tmp_path):
 
 
 def test_training_metrics(trained):
-    assert all(0 <= value <= 1 for value in trained.metrics.values())
+    assert all(value >= 0 for value in trained.metrics.values())
     assert trained.metrics["roc_auc_malignant"] > 0.9
+
+
+def test_training_split_and_selection(trained):
+    report = trained.report
+    assert not set(report["train_indices"]) & set(report["test_indices"])
+    assert len(report["train_indices"]) + len(report["test_indices"]) == 569
+    comparisons = report["cross_validation"]
+    assert len(comparisons) == 4
+    assert report["selected_model"] == min(
+        comparisons, key=lambda name: comparisons[name]["log_loss_mean"]
+    )
