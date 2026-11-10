@@ -10,3 +10,4 @@ build/
 .DS_Store
 artifacts/
 monitoring_report.json
+.ipynb_checkpoints/
